@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastAPI CRUD Frontend</title>
+</head>
+<body>
+    <h1>User Management</h1>
+
+    <!-- Create User -->
+    <h2>Create User</h2>
+    <form id="createUserForm">
+        <label>Name: <input type="text" id="createName" required></label><br>
+        <label>Email: <input type="email" id="createEmail" required></label><br>
+        <label>Phone No: <input type="number" id="createPhoneNo" required></label><br>
+        <label>Password: <input type="password" id="createPassword" required></label><br>
+        <button type="submit">Create User</button>
+    </form>
+    <p id="createResponse"></p>
+
+    <!-- Read User -->
+    <h2>Get User</h2>
+    <form id="getUserForm">
+        <label>User ID: <input type="text" id="getUserId" required></label><br>
+        <button type="submit">Get User</button>
+    </form>
+    <pre id="getUserResponse"></pre>
+
+    <!-- Update User -->
+    <h2>Update User</h2>
+    <form id="updateUserForm">
+        <label>User ID: <input type="text" id="updateUserId" required></label><br>
+        <label>Name: <input type="text" id="updateName" required></label><br>
+        <label>Email: <input type="email" id="updateEmail" required></label><br>
+        <label>Phone No: <input type="number" id="updatePhoneNo" required></label><br>
+        <label>Password: <input type="password" id="updatePassword" required></label><br>
+        <button type="submit">Update User</button>
+    </form>
+    <p id="updateResponse"></p>
+
+    <!-- Delete User -->
+    <h2>Delete User</h2>
+    <form id="deleteUserForm">
+        <label>User ID: <input type="text" id="deleteUserId" required></label><br>
+        <button type="submit">Delete User</button>
+    </form>
+    <p id="deleteResponse"></p>
+
+    <script>
+        const apiBaseUrl = "http://localhost:8000/users";
+
+        // Create User
+        document.getElementById("createUserForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const user = {
+                name: document.getElementById("createName").value,
+                email: document.getElementById("createEmail").value,
+                phoneNo: parseInt(document.getElementById("createPhoneNo").value),
+                password: document.getElementById("createPassword").value,
+            };
+            const response = await fetch(apiBaseUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(user),
+            });
+            const data = await response.json();
+            document.getElementById("createResponse").innerText = JSON.stringify(data, null, 2);
+        });
+
+        // Read User
+        document.getElementById("getUserForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const userId = document.getElementById("getUserId").value;
+            const response = await fetch(`${apiBaseUrl}/${userId}`);
+            const data = await response.json();
+            document.getElementById("getUserResponse").innerText = JSON.stringify(data, null, 2);
+        });
+
+        // Update User
+        document.getElementById("updateUserForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const userId = document.getElementById("updateUserId").value;
+            const user = {
+                name: document.getElementById("updateName").value,
+                email: document.getElementById("updateEmail").value,
+                phoneNo: parseInt(document.getElementById("updatePhoneNo").value),
+                password: document.getElementById("updatePassword").value,
+            };
+            const response = await fetch(`${apiBaseUrl}/${userId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(user),
+            });
+            const data = await response.json();
+            document.getElementById("updateResponse").innerText = JSON.stringify(data, null, 2);
+        });
+
+        // Delete User
+        document.getElementById("deleteUserForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const userId = document.getElementById("deleteUserId").value;
+            const response = await fetch(`${apiBaseUrl}/${userId}`, {
+                method: "DELETE",
+            });
+            const data = await response.json();
+            document.getElementById("deleteResponse").innerText = JSON.stringify(data, null, 2);
+        });
+    </script>
+</body>
+</html>
